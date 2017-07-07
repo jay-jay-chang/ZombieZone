@@ -8,6 +8,7 @@ public class controller : MonoBehaviour, IPointerDownHandler{
 	public CanvasScaler refScaler;
 	public GameObject controlTarget;
 	public float speed = 1.0f;
+	public bool y_axis_lock = false;
 	Vector2 target;
 
 	static Vector2 getNormPos(Vector2 pos)
@@ -45,14 +46,18 @@ public class controller : MonoBehaviour, IPointerDownHandler{
 	void Update () {
 		float fx = target.x - controlTarget.transform.localPosition.x;
 		float fy = target.y - controlTarget.transform.localPosition.y;
+		if (y_axis_lock) 
+		{
+			fy = 0;
+		}
 
-		if (Mathf.Abs(fx) < 0.0001f && Mathf.Abs(fy) < 0.0001f) 
+		if (Mathf.Abs(fx) < 1f && Mathf.Abs(fy) < 1f) 
 		{
 			return;
 		}
 		float factor = speed / Mathf.Sqrt (fx * fx + fy * fy);
 
-		Debug.Log (factor * fx + "," + factor * fy);
+		//Debug.Log (factor * fx + "," + factor * fy);
 		Vector3 newpos = new Vector3(controlTarget.transform.localPosition.x + factor * fx, controlTarget.transform.localPosition.y + factor * fy, controlTarget.transform.localPosition.z);
 		controlTarget.transform.localPosition = newpos;
 	}
