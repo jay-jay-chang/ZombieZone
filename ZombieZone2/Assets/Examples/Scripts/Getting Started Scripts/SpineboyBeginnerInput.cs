@@ -40,11 +40,12 @@ namespace Spine.Unity.Examples {
 
 		float current_x;
 
-		public SpineboyBeginnerModel model;
+		//public SpineboyBeginnerModel model;
+		public zmmModel model;
 
 		void OnValidate () {
 			if (model == null)
-				model = GetComponent<SpineboyBeginnerModel>();
+				model = GetComponent<zmmModel>();
 		}
 		#endregion
 
@@ -57,16 +58,16 @@ namespace Spine.Unity.Examples {
 			if (model == null) return;
 
 			float dis = current_x - model.gameObject.transform.position.x;
-			Debug.Log (model.gameObject.transform.position.x);
+			//Debug.Log (model.gameObject.transform.position.x);
 			if (Mathf.Abs(dis) > 0.0001f) 
 			{
 				if (dis > 0) 
 				{
-					model.TryMove (-1);
+					model.TryMove (1);
 				} 
 				else 
 				{
-					model.TryMove (1);
+					model.TryMove (-1);
 				}
 			}
 			else 
@@ -81,8 +82,8 @@ namespace Spine.Unity.Examples {
 			if (Input.GetButton(attackButton))
 				model.TryShoot();
 
-			if (Input.GetButtonDown(jumpButton))
-				model.TryJump();
+//			if (Input.GetButtonDown(jumpButton))
+//				model.TryJump();
 		}
 	}
 
