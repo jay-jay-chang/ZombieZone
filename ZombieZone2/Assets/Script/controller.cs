@@ -30,7 +30,7 @@ public class controller : MonoBehaviour, IPointerDownHandler{
 	public void OnPointerDown(PointerEventData ped) 
 	{
 		Vector2 pos = mouseToWorldPos (ped.position);
-		Debug.Log ("clickPos = " + pos.x + "," + pos.y);
+		//Debug.Log ("clickPos = " + pos.x + "," + pos.y);
 		target = pos;
 	}
 
