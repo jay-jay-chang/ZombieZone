@@ -7,11 +7,11 @@ using UnityEngine.EventSystems;
 public class battleController : MonoBehaviour, IPointerDownHandler {
 
 	public CanvasScaler refScaler;
-	public GameObject controlTarget;
+	public Section[] bg;
 	public float speed = 1.0f;
-	public bool y_axis_lock = false;
-	Vector2 target;
-	Vector2 current;
+	public int sectionLeftLimit = -1;
+	public int sectionRightLimit = 1;
+	float move = 0;
 
 	static Vector2 getNormPos(Vector2 pos)
 	{
@@ -32,36 +32,61 @@ public class battleController : MonoBehaviour, IPointerDownHandler {
 	public void OnPointerDown(PointerEventData ped) 
 	{
 		Vector2 pos = mouseToWorldPos (ped.position);
-		Debug.Log ("clickPos = " + pos.x + "," + pos.y);
-		target = pos + current;
-		Debug.Log ("targetPos = " + target.x + "," + target.y);
+		move = move + (-pos.x - move);
 	}
 
 	// Use this for initialization
 	void Start () {
-		if (controlTarget != null)
-		{
-			current = target = new Vector2 (controlTarget.transform.localPosition.x, controlTarget.transform.localPosition.y);
+		if(bg.Length == 3){
+			bg[0].id = -1;
+			bg[1].id = 0;
+			bg[2].id = 1;
+			bg[0].onSectionLoad(-1);
+			bg[1].onSectionLoad(0);
+			bg[2].onSectionLoad(1);
 		}
+
 	}
 
 	// Update is called once per frame
 	void Update () {
-		float fx = target.x - current.x;//controlTarget.transform.localPosition.x;
-		float fy = target.y - current.y;//controlTarget.transform.localPosition.y;
-		if (y_axis_lock) 
-		{
-			fy = 0;
+		float refWidth = refScaler.referenceResolution.x;
+		if(bg.Length == 3){
+			if((bg[0].id == sectionLeftLimit && bg[0].gameObject.transform.localPosition.x >= 0 && move > 0) || 
+				(bg[2].id == sectionRightLimit && bg[2].gameObject.transform.localPosition.x <= 0 && move < 0)){
+				return;
+			}
 		}
-
-		if (Mathf.Abs(fx) < 1f && Mathf.Abs(fy) < 1f) 
-		{
-			return;
+		if(Mathf.Abs(move) >= speed){
+			float factor = (move > 0)? speed : -speed;
+			foreach(Section sc in bg){
+				Vector3 newpos = new Vector3(sc.gameObject.transform.localPosition.x + factor, sc.gameObject.transform.localPosition.y, sc.gameObject.transform.localPosition.z);
+				sc.gameObject.transform.localPosition = newpos; 
+			}
+			move -= factor;
 		}
-		float factor = speed / Mathf.Sqrt (fx * fx + fy * fy);
-
-		//Debug.Log (factor * fx + "," + factor * fy);
-		Vector3 newpos = new Vector3(controlTarget.transform.localPosition.x + factor * fx, controlTarget.transform.localPosition.y + factor * fy, controlTarget.transform.localPosition.z);
-		controlTarget.transform.localPosition = newpos;
+		//adjust bg
+		if(bg[0].gameObject.transform.localPosition.x < -refWidth*1.5f && bg[2].id < sectionRightLimit){
+			Vector3 newPos = bg[2].gameObject.transform.localPosition;
+			newPos.x += refWidth;
+			bg[0].gameObject.transform.localPosition = newPos;
+			Section tempSc = bg[0];
+			bg[0] = bg[1];
+			bg[1] = bg[2];
+			bg[2] = tempSc;
+			bg[2].id = bg[1].id+1;
+			bg[2].onSectionLoad(bg[2].id);
+		}
+		else if(bg[2].gameObject.transform.localPosition.x > refWidth*1.5f && bg[0].id > sectionLeftLimit){
+			Vector3 newPos = bg[0].gameObject.transform.localPosition;
+			newPos.x -= refWidth;
+			bg[2].gameObject.transform.localPosition = newPos;
+			Section tempSc = bg[2];
+			bg[2] = bg[1];
+			bg[1] = bg[0];
+			bg[0] = tempSc;
+			bg[0].id = bg[1].id-1;
+			bg[0].onSectionLoad(bg[0].id);
+		}
 	}
 }
