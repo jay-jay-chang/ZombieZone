@@ -21,12 +21,28 @@ namespace Spine.Unity.Examples {
 
 		#region API
 
+		ZombieAI target;
+
 		public void TryShoot () {
 			float currentTime = Time.time;
 
 			if (currentTime - lastShootTime > shootInterval) {
 				lastShootTime = currentTime;
 				if (ShootEvent != null) ShootEvent();	// Fire the "ShootEvent" event.
+			}
+		}
+
+		public void TryShoot (ZombieAI ai) {
+			float currentTime = Time.time;
+
+			facingLeft = ai.transition > 0 ? true : false;
+
+			if (currentTime - lastShootTime > shootInterval) {
+				lastShootTime = currentTime;
+				if (ShootEvent != null) {
+					ShootEvent();	// Fire the "ShootEvent" event.
+					ai.OnDamage(1);
+				}
 			}
 		}
 
@@ -46,6 +62,6 @@ namespace Spine.Unity.Examples {
 
 	public enum zmmBodyState {
 		Idle,
-		Running
+		Running,
 	}
 }

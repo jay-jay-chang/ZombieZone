@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Spine.Unity.Examples;
 
 public class battleController : MonoBehaviour, IPointerDownHandler {
 
@@ -11,6 +12,9 @@ public class battleController : MonoBehaviour, IPointerDownHandler {
 	public float speed = 1.0f;
 	public int sectionLeftLimit = -1;
 	public int sectionRightLimit = 1;
+	public zmmModel zmm;
+	public GameObject basespace;
+	public GameObject[] sections;
 	float move = 0;
 
 	static Vector2 getNormPos(Vector2 pos)
@@ -41,11 +45,17 @@ public class battleController : MonoBehaviour, IPointerDownHandler {
 			bg[0].id = -1;
 			bg[1].id = 0;
 			bg[2].id = 1;
-			bg[0].onSectionLoad(-1);
-			bg[1].onSectionLoad(0);
-			bg[2].onSectionLoad(1);
+			OnSectionLoad(0);
+			OnSectionLoad(1);
+			OnSectionLoad(2);
 		}
+		foreach(ZombieView view in basespace.GetComponentsInChildren<ZombieView>()){
+			view.OnZombieSelect += OnZombieSelect;
+		}
+	}
 
+	void OnSectionLoad(int sectionId){
+		bg [sectionId].onSectionLoad(sections[bg[sectionId].id-sectionLeftLimit]);
 	}
 
 	// Update is called once per frame
@@ -54,17 +64,26 @@ public class battleController : MonoBehaviour, IPointerDownHandler {
 		if(bg.Length == 3){
 			if((bg[0].id == sectionLeftLimit && bg[0].gameObject.transform.localPosition.x >= 0 && move > 0) || 
 				(bg[2].id == sectionRightLimit && bg[2].gameObject.transform.localPosition.x <= 0 && move < 0)){
+				move = 0;
 				return;
 			}
 		}
-		if(Mathf.Abs(move) >= speed){
-			float factor = (move > 0)? speed : -speed;
-			foreach(Section sc in bg){
-				Vector3 newpos = new Vector3(sc.gameObject.transform.localPosition.x + factor, sc.gameObject.transform.localPosition.y, sc.gameObject.transform.localPosition.z);
+		if (Mathf.Abs (move) >= speed) {
+			float factor = (move > 0) ? speed : -speed;
+			//move scene
+			foreach (Section sc in bg) {
+				Vector3 newpos = new Vector3 (sc.gameObject.transform.localPosition.x + factor, sc.gameObject.transform.localPosition.y, sc.gameObject.transform.localPosition.z);
 				sc.gameObject.transform.localPosition = newpos; 
 			}
+			//move active objects
+			Vector3 basepos = new Vector3 (basespace.transform.localPosition.x + factor, basespace.transform.localPosition.y, basespace.transform.localPosition.z);
+			basespace.transform.localPosition = basepos;
+
 			move -= factor;
+		} else {
+			move = 0;
 		}
+		zmm.TryMove(move);
 		//adjust bg
 		if(bg[0].gameObject.transform.localPosition.x < -refWidth*1.5f && bg[2].id < sectionRightLimit){
 			Vector3 newPos = bg[2].gameObject.transform.localPosition;
@@ -75,7 +94,7 @@ public class battleController : MonoBehaviour, IPointerDownHandler {
 			bg[1] = bg[2];
 			bg[2] = tempSc;
 			bg[2].id = bg[1].id+1;
-			bg[2].onSectionLoad(bg[2].id);
+			OnSectionLoad(2);
 		}
 		else if(bg[2].gameObject.transform.localPosition.x > refWidth*1.5f && bg[0].id > sectionLeftLimit){
 			Vector3 newPos = bg[0].gameObject.transform.localPosition;
@@ -86,7 +105,12 @@ public class battleController : MonoBehaviour, IPointerDownHandler {
 			bg[1] = bg[0];
 			bg[0] = tempSc;
 			bg[0].id = bg[1].id-1;
-			bg[0].onSectionLoad(bg[0].id);
+			OnSectionLoad(0);
 		}
+	}
+
+	public void OnZombieSelect(ZombieAI ai){
+		move = 0;
+		zmm.TryShoot (ai);
 	}
 }
