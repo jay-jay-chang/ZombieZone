@@ -32,7 +32,7 @@ public class ZombieAI : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		transition = axisBase.transform.localPosition.x + transform.localPosition.x;
+		transition = axisBase.transform.localPosition.x + transform.localPosition.x - target.transform.localPosition.x;
 		float dis = Mathf.Abs(transition);
 		if (dis < 350) {
 			if (dis > 20) {

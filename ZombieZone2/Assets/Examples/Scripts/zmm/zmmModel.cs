@@ -22,6 +22,8 @@ namespace Spine.Unity.Examples {
 		#region API
 
 		ZombieAI target;
+		public float moveSpeed = 1f;
+		float move;
 
 		public void TryShoot () {
 			float currentTime = Time.time;

@@ -16,6 +16,7 @@ public class battleController : MonoBehaviour, IPointerDownHandler {
 	public GameObject basespace;
 	public GameObject[] sections;
 	float move = 0;
+	float zmmMove = 0;
 
 	static Vector2 getNormPos(Vector2 pos)
 	{
@@ -62,12 +63,27 @@ public class battleController : MonoBehaviour, IPointerDownHandler {
 	void Update () {
 		float refWidth = refScaler.referenceResolution.x;
 		if(bg.Length == 3){
-			if((bg[0].id == sectionLeftLimit && bg[0].gameObject.transform.localPosition.x >= 0 && move > 0) || 
-				(bg[2].id == sectionRightLimit && bg[2].gameObject.transform.localPosition.x <= 0 && move < 0)){
-				move = 0;
+			if((bg[0].id == sectionLeftLimit && bg[0].gameObject.transform.localPosition.x >= 0 && zmm.transform.localPosition.x <= 0 /*&& move > 0*/) || 
+				(bg[2].id == sectionRightLimit && bg[2].gameObject.transform.localPosition.x <= 0 && zmm.transform.localPosition.x >= 0 /*&& move < 0*/)){
+
+				float zmmMove = zmm.transform.localPosition.x + move;
+				float moveAbs = Mathf.Abs (zmmMove);
+				if (Mathf.Abs(zmmMove) > speed ) {
+					zmm.TryMove(zmmMove);
+					float factor = (zmmMove > 0) ? -speed : speed;
+					Vector3 newpos = new Vector3 (zmm.transform.localPosition.x + factor, zmm.transform.localPosition.y, zmm.transform.localPosition.z);
+					zmm.transform.localPosition = newpos;
+				}
+				else{
+					zmmMove = 0;
+					zmm.TryMove(0);
+				}
 				return;
 			}
 		}
+		//while normal moving, reset transform
+		zmm.transform.localPosition = new Vector3 (0, zmm.transform.localPosition.y, zmm.transform.localPosition.z);
+
 		if (Mathf.Abs (move) >= speed) {
 			float factor = (move > 0) ? speed : -speed;
 			//move scene
