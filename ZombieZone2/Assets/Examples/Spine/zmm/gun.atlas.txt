@@ -1,0 +1,139 @@
+
+gun.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1922
+  rotate: false
+  xy: 204, 240
+  size: 50, 14
+  orig: 50, 14
+  offset: 0, 0
+  index: -1
+AK47
+  rotate: false
+  xy: 2, 120
+  size: 72, 22
+  orig: 72, 22
+  offset: 0, 0
+  index: -1
+AK47_gold
+  rotate: false
+  xy: 2, 96
+  size: 72, 22
+  orig: 72, 22
+  offset: 0, 0
+  index: -1
+ASG
+  rotate: false
+  xy: 106, 232
+  size: 96, 22
+  orig: 96, 22
+  offset: 0, 0
+  index: -1
+AWP
+  rotate: false
+  xy: 2, 196
+  size: 96, 26
+  orig: 96, 26
+  offset: 0, 0
+  index: -1
+BASEBALL
+  rotate: true
+  xy: 106, 222
+  size: 8, 44
+  orig: 8, 44
+  offset: 0, 0
+  index: -1
+Crowbar
+  rotate: true
+  xy: 132, 210
+  size: 10, 40
+  orig: 10, 40
+  offset: 0, 0
+  index: -1
+G36
+  rotate: false
+  xy: 2, 168
+  size: 80, 26
+  orig: 80, 26
+  offset: 0, 0
+  index: -1
+Kukri
+  rotate: true
+  xy: 152, 222
+  size: 8, 42
+  orig: 8, 42
+  offset: 0, 0
+  index: -1
+M16
+  rotate: false
+  xy: 2, 70
+  size: 70, 24
+  orig: 70, 24
+  offset: 0, 0
+  index: -1
+M1911
+  rotate: true
+  xy: 38, 2
+  size: 24, 14
+  orig: 24, 14
+  offset: 0, 0
+  index: -1
+M82A1
+  rotate: false
+  xy: 2, 224
+  size: 102, 30
+  orig: 102, 30
+  offset: 0, 0
+  index: -1
+M870
+  rotate: false
+  xy: 2, 52
+  size: 58, 16
+  orig: 58, 16
+  offset: 0, 0
+  index: -1
+M9
+  rotate: true
+  xy: 46, 28
+  size: 22, 14
+  orig: 22, 14
+  offset: 0, 0
+  index: -1
+MAC10
+  rotate: false
+  xy: 100, 194
+  size: 30, 26
+  orig: 30, 26
+  offset: 0, 0
+  index: -1
+MP5
+  rotate: false
+  xy: 2, 28
+  size: 42, 22
+  orig: 42, 22
+  offset: 0, 0
+  index: -1
+Mark XIX
+  rotate: false
+  xy: 132, 192
+  size: 26, 16
+  orig: 26, 16
+  offset: 0, 0
+  index: -1
+Sa vz
+  rotate: false
+  xy: 2, 4
+  size: 34, 22
+  orig: 34, 22
+  offset: 0, 0
+  index: -1
+UTS_15
+  rotate: false
+  xy: 2, 144
+  size: 74, 22
+  orig: 74, 22
+  offset: 0, 0
+  index: -1
