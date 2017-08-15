@@ -12,10 +12,16 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	public GameObject home;
 	public Image homeIcon;
 	public Image curLoctionIcon;
-	public arrowLine line;
+	public mapArrow line;
+
+	public Transform mapAnchor;
+	public GameObject mapElemPref;
+	public Sprite[] mapElemets;
 
 	//ui
 	public locationInfoPanel locInfoPanel;
+
+	bool isMovingToLocation = false;
 
 	Image touchBoard;
 
@@ -66,6 +72,26 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 		locInfoPanel.hide ();
 		line.gameObject.SetActive (false);
 		curLoctionIcon.gameObject.GetComponent<itweenMisc> ().onComplete += OnLocGoComplete;
+
+		float tileWid = 0.5f * mapElemets [0].rect.width;
+		float tileHeight = 0.5f * mapElemets [0].rect.height;
+		int mapLength = 20;
+		Debug.LogError(tileWid.ToString() + ", " +tileHeight.ToString());
+		Vector2 initial = new Vector2 (-tileWid*mapLength, 0);
+		Vector3 localScale = new Vector3 (100, 100, 1);
+		mapAnchor.localPosition = new Vector3 (0, 0, mapAnchor.localPosition.z);
+		for (int i = 0; i < mapLength; ++i) {
+			for (int j = 0; j < mapLength; ++j) {
+				GameObject mapElement = GameObject.Instantiate (mapElemPref);
+				mapElement.transform.SetParent (mapAnchor);
+				mapElement.transform.localPosition = new Vector3 (initial.x+j*tileWid, initial.y - j*tileHeight, 0);
+				mapElement.transform.localScale = localScale;
+				int idx = Random.Range (0, mapElemets.Length);
+				mapElement.GetComponent<SpriteRenderer> ().sprite = mapElemets [idx];
+			}
+			initial.x += tileWid;
+			initial.y += tileHeight;
+		}
 	}
 
 	void initialLocations(){
@@ -78,10 +104,13 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
 	void setCurrentLocation(location loc){
 		currentLocation = loc;
-		curLoctionIcon.rectTransform.anchoredPosition = new Vector2( loc.ui.rectTransform.anchoredPosition.x , loc.ui.rectTransform.anchoredPosition.y + 40f); 
+		curLoctionIcon.rectTransform.anchoredPosition = new Vector2( loc.ui.rectTransform.anchoredPosition.x , loc.ui.rectTransform.anchoredPosition.y); 
 	}
 
 	void OnLocSelect(location loc){
+		if (isMovingToLocation) {
+			return;
+		}
 		Debug.Log (loc.id + " is selected");
 		Vector2 dis = new Vector2 (loc.ui.rectTransform.anchoredPosition.x - currentLocation.ui.rectTransform.anchoredPosition.x, loc.ui.rectTransform.anchoredPosition.y - currentLocation.ui.rectTransform.anchoredPosition.y);
 		int time = (int)(dis.magnitude / 100f);
@@ -95,8 +124,12 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	}
 
 	void OnLocGo(){
-		line.setStart(currentLocation.gameObject);
-		line.setEnd (targetLocation.gameObject);
+		if (isMovingToLocation) {
+			return;
+		}
+		isMovingToLocation = true;
+
+		line.setLine(currentLocation.gameObject, targetLocation.gameObject);
 		line.gameObject.SetActive (true);
 
 		RectTransform s = currentLocation.gameObject.GetComponent<Image> ().rectTransform;
@@ -112,6 +145,7 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	}
 
 	void OnLocGoComplete(){
+		isMovingToLocation = false;
 		setCurrentLocation (targetLocation);
 		line.gameObject.SetActive (false);
 	}
