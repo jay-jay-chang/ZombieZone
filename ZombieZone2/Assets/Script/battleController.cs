@@ -15,6 +15,7 @@ public class battleController : MonoBehaviour, IPointerDownHandler {
 	public zmmModel zmm;
 	public GameObject basespace;
 	public GameObject[] sections;
+	float charOffset;
 	float move = 0;
 	float zmmMove = 0;
 
@@ -53,6 +54,7 @@ public class battleController : MonoBehaviour, IPointerDownHandler {
 		foreach(ZombieView view in basespace.GetComponentsInChildren<ZombieView>()){
 			view.OnZombieSelect += OnZombieSelect;
 		}
+		charOffset = zmm.gameObject.transform.localPosition.x;
 	}
 
 	void OnSectionLoad(int sectionId){
@@ -63,8 +65,8 @@ public class battleController : MonoBehaviour, IPointerDownHandler {
 	void Update () {
 		float refWidth = refScaler.referenceResolution.x;
 		if(bg.Length == 3){
-			if((bg[0].id == sectionLeftLimit && bg[0].gameObject.transform.localPosition.x >= 0 && zmm.transform.localPosition.x <= 0 /*&& move > 0*/) || 
-				(bg[2].id == sectionRightLimit && bg[2].gameObject.transform.localPosition.x <= 0 && zmm.transform.localPosition.x >= 0 /*&& move < 0*/)){
+			if((bg[0].id == sectionLeftLimit && bg[0].gameObject.transform.localPosition.x >= 0 && zmm.transform.localPosition.x <= charOffset /*&& move > 0*/) || 
+				(bg[2].id == sectionRightLimit && bg[2].gameObject.transform.localPosition.x <= 0 && zmm.transform.localPosition.x >= charOffset /*&& move < 0*/)){
 
 				float zmmMove = zmm.transform.localPosition.x + move;
 				float moveAbs = Mathf.Abs (zmmMove);
@@ -82,7 +84,7 @@ public class battleController : MonoBehaviour, IPointerDownHandler {
 			}
 		}
 		//while normal moving, reset transform
-		zmm.transform.localPosition = new Vector3 (0, zmm.transform.localPosition.y, zmm.transform.localPosition.z);
+		zmm.transform.localPosition = new Vector3 (charOffset, zmm.transform.localPosition.y, zmm.transform.localPosition.z);
 
 		if (Mathf.Abs (move) >= speed) {
 			float factor = (move > 0) ? speed : -speed;
