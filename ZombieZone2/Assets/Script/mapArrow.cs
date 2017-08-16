@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 public class mapArrow : MonoBehaviour {
 
-	public float length;
-	public GameObject mapArrowUnit;
-
 	public GameObject sGO;
 	public GameObject eGO;
 
@@ -17,7 +14,6 @@ public class mapArrow : MonoBehaviour {
 	public SpriteRenderer sRenderer;
 	public float speed;
 
-	List < GameObject > createdObject;
 	float updateTime;
 
 	void Start () {
