@@ -38,7 +38,7 @@ public class battleController : MonoBehaviour, IPointerDownHandler {
 	public void OnPointerDown(PointerEventData ped) 
 	{
 		Vector2 pos = mouseToWorldPos (ped.position);
-		move = move + (-pos.x - move);
+		move = -pos.x + charOffset;
 	}
 
 	// Use this for initialization
