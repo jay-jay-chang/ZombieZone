@@ -58,7 +58,7 @@ namespace Spine.Unity.Modules {
 
 		void Start () { } // Allow checkbox in inspector
 
-		void Apply (SkeletonRenderer skeletonRenderer) {
+		public void Apply (SkeletonRenderer skeletonRenderer) {
 			if (!this.enabled) return;
 
 			atlas = atlasAsset.GetAtlas();
@@ -72,8 +72,10 @@ namespace Spine.Unity.Modules {
 				if (region == null) {
 					slot.Attachment = null;
 				} else if (inheritProperties && originalAttachment != null) {
+					Debug.Log ("aaa");
 					slot.Attachment = originalAttachment.GetRemappedClone(region, true, true, scale);
 				} else {
+					Debug.Log ("bbb");
 					var newRegionAttachment = region.ToRegionAttachment(region.name, scale);
 					slot.Attachment = newRegionAttachment;
 				}
