@@ -22,8 +22,26 @@ namespace Spine.Unity.Examples {
 		#region API
 
 		ZombieAI target;
-		public float moveSpeed = 1f;
+		public float moveStep = 1f;
 		float move;
+
+		public void MoveForward(float dis){
+			move = dis;
+		}
+
+		void Update(){
+			float dis = Mathf.Abs(move);
+			if(dis > moveStep){
+				float factor = (move > 0) ? moveStep: -moveStep;
+				TryMove(-factor);
+				this.gameObject.transform.localPosition += new Vector3(factor, 0, 0);
+				move -= factor;
+			}
+			else{
+				move = 0;
+				TryMove(0);
+			}
+		}
 
 		public void TryShoot () {
 			float currentTime = Time.time;

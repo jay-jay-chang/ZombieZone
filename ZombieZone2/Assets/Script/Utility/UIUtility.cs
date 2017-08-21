@@ -11,7 +11,7 @@ public class UIUtility {
 		return new Vector2 ( ((float)pos.x - w * 0.5f)/w, ((float)pos.y - h * 0.5f)/h);
 	}
 
-	public static Vector2 mouseToWorldPos(float resolutionX, float resolutionY , Vector2 mousePos)
+	public static Vector2 mouseToScreenPos(float resolutionX, float resolutionY , Vector2 mousePos)
 	{
 		float w = Screen.width;
 		float h = Screen.height;

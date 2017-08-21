@@ -22,6 +22,7 @@ public class ZombieView : MonoBehaviour, IPointerDownHandler {
 		//Vector2 pos = mouseToWorldPos (ped.position);
 		//move = move + (-pos.x - move);
 		if (OnZombieSelect != null) {
+			
 			OnZombieSelect(this.transform.parent.GetComponent<ZombieAI>());
 		}
 	}

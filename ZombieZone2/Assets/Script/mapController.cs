@@ -37,13 +37,13 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
 
 	public void OnBeginDrag(PointerEventData ped) {
-		Vector2 pos = UIUtility.mouseToWorldPos (refScaler.referenceResolution.x, refScaler.referenceResolution.y, ped.position);
+		Vector2 pos = UIUtility.mouseToScreenPos (refScaler.referenceResolution.x, refScaler.referenceResolution.y, ped.position);
 		//Debug.Log ("downPos = " + pos.x + "," + pos.y);
 		prevPos = pos;
 	}
 
 	public void OnDrag(PointerEventData ped) {
-		Vector2 pos = UIUtility.mouseToWorldPos (refScaler.referenceResolution.x, refScaler.referenceResolution.y, ped.position);
+		Vector2 pos = UIUtility.mouseToScreenPos (refScaler.referenceResolution.x, refScaler.referenceResolution.y, ped.position);
 		//Debug.Log ("dragPos = " + pos.x + "," + pos.y);
 		float x = pos.x - prevPos.x + touchBoard.rectTransform.anchoredPosition.x;
 		x = x > xbound.x ? xbound.x : x;

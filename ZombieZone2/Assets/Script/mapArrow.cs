@@ -70,7 +70,6 @@ public class mapArrow : MonoBehaviour {
 //	}
 
 	public void makeLine(float length){
-		Debug.LogError (sRenderer.sprite.textureRect.width + ","+ sRenderer.sprite.textureRect.height);
 		Vector2 unit = new Vector2( sRenderer.sprite.textureRect.width, sRenderer.sprite.textureRect.height);
 		int num = Mathf.CeilToInt(length / sRenderer.sprite.textureRect.width);
 		sRenderer.size = new Vector2 (sRenderer.sprite.textureRect.width / this.gameObject.transform.localScale.x * num, sRenderer.sprite.textureRect.height / this.gameObject.transform.localScale.y);
