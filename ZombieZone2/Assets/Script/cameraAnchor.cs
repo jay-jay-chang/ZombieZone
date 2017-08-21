@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class cameraAnchor : MonoBehaviour {
+public class CameraAnchor : MonoBehaviour {
 
 	public Vector2 x_axis_limit;
 	public Transform target;
