@@ -42,4 +42,16 @@ public class ZombieAI : MonoBehaviour {
 			}
 		}
 	}
+
+//	void OnTriggerEnter2D(Collider2D other) {
+//		Debug.Log (other.gameObject.name +" Enter!");
+//	}
+//
+//	void OnTriggerStay2D(Collider2D other) {
+//		Debug.Log (other.gameObject.name +" Stay!");
+//	}
+//
+//	void OnTriggerExit2D(Collider2D other) {
+//		Debug.Log (other.gameObject.name +" Exit!");
+//	}
 }

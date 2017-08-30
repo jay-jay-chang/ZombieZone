@@ -17,6 +17,8 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 	public List<GameObject> sections = new List<GameObject>();
 	public GameObject[] sectionData;
 
+	public bool autoPlay = true;
+
 	public void OnPointerDown(PointerEventData ped) 
 	{
 		Vector2 pos = UIUtility.mouseToScreenPos (refScaler.referenceResolution.x, refScaler.referenceResolution.y, ped.position);

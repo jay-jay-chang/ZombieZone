@@ -7,7 +7,7 @@ namespace Spine.Unity.Examples {
 
 		#region Inspector
 		[Header("Current State")]
-		public zmmBodyState state;
+		public zmmBodyState state = zmmBodyState.Idle;
 		public bool facingLeft;
 		[Range(-1f, 1f)]
 		public float currentSpeed;
@@ -25,21 +25,42 @@ namespace Spine.Unity.Examples {
 		public float moveStep = 1f;
 		float move;
 
+		public bool auto = true;
+		public float endPoint = 0;
+
 		public void MoveForward(float dis){
 			move = dis;
+			state = zmmBodyState.Running;
 		}
 
 		void Update(){
-			float dis = Mathf.Abs(move);
-			if(dis > moveStep){
-				float factor = (move > 0) ? moveStep: -moveStep;
-				TryMove(-factor);
-				this.gameObject.transform.localPosition += new Vector3(factor, 0, 0);
-				move -= factor;
-			}
-			else{
-				move = 0;
-				TryMove(0);
+			if (state == zmmBodyState.Firing) {
+			} else if (state == zmmBodyState.Idle) {
+				if (auto) {
+					float dis = endPoint - this.gameObject.transform.localPosition.x;
+					if (Mathf.Abs (dis) >= moveStep){
+						MoveForward (dis);
+					}
+				}
+			} else if (state == zmmBodyState.Running) {
+				float dis = Mathf.Abs (move);
+				if (dis > moveStep) {
+					float factor = (move > 0) ? moveStep : -moveStep;
+					TryMove (-factor);
+					this.gameObject.transform.localPosition += new Vector3 (factor, 0, 0);
+					move -= factor;
+				} else {
+//					if (auto) {
+//						float d = endPoint - this.gameObject.transform.localPosition.x;
+//						if (Mathf.Abs (d) < moveStep) {
+//						} else {
+//							MoveForward (endPoint - this.gameObject.transform.localPosition.x);
+//						}
+//					} else {
+						move = 0;
+						TryMove (0);
+					//}
+				}
 			}
 		}
 
@@ -54,6 +75,10 @@ namespace Spine.Unity.Examples {
 
 		public void TryShoot (ZombieAI ai) {
 			float currentTime = Time.time;
+
+
+			MoveForward (0);
+			state = zmmBodyState.Firing;
 
 			facingLeft = ai.transition > 0 ? true : false;
 
@@ -78,10 +103,34 @@ namespace Spine.Unity.Examples {
 
 		}
 		#endregion
+
+		void OnTriggerEnter2D(Collider2D other) {
+			//Debug.Log (other.gameObject.name +" Enter!");
+		}
+
+		void OnTriggerStay2D(Collider2D other) {
+			if (auto) {
+				ZombieAI ai = other.gameObject.GetComponent<ZombieAI> ();
+				if (ai != null) {
+					TryShoot (ai);
+				}
+			}
+		}
+
+		void OnTriggerExit2D(Collider2D other) {
+			//Debug.Log (other.gameObject.name +" Exit!");
+			if (auto) {
+				state = zmmBodyState.Idle;
+			}
+		}
+
 	}
+
+
 
 	public enum zmmBodyState {
 		Idle,
 		Running,
+		Firing,
 	}
 }
