@@ -16,7 +16,7 @@ public class gameLogic : MonoBehaviour {
 	public float PowerDecayRate = 0.01f;
 	private float powerProduceTime = 0f;
 	private int PowerHealthMax;
-	private int powerHealth;
+	private int powerHealth = 100;
 	public int PowerHealth{
 		set{ powerHealth = value >= 0 ? value : 0;}
 		get{ return powerHealth; }
