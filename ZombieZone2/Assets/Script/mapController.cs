@@ -18,6 +18,8 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	public GameObject mapElemPref;
 	public Sprite[] mapElemets;
 
+	public Canvas canvas;
+
 	//ui
 	public locationInfoPanel locInfoPanel;
 
@@ -92,6 +94,8 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 			initial.x += tileWid;
 			initial.y += tileHeight;
 		}
+
+		gameLogic.Instance.ShowMapDel += UIOpen;
 	}
 
 	void initialLocations(){
@@ -111,11 +115,26 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 		if (isMovingToLocation) {
 			return;
 		}
-		Debug.Log (loc.id + " is selected");
-		Vector2 dis = new Vector2 (loc.ui.rectTransform.anchoredPosition.x - currentLocation.ui.rectTransform.anchoredPosition.x, loc.ui.rectTransform.anchoredPosition.y - currentLocation.ui.rectTransform.anchoredPosition.y);
-		int time = (int)(dis.magnitude / 100f);
-		locInfoPanel.show ("it will take " + time + " seconds");
-		targetLocation = loc;
+		if (loc.id == currentLocation.id) {
+			if (loc.id == "m0001") {
+				gameLogic.Instance.OnEnterHome();
+				UIClose ();
+			}
+		} else {
+			Debug.Log (loc.id + " is selected");
+			Vector2 dis = new Vector2 (loc.ui.rectTransform.anchoredPosition.x - currentLocation.ui.rectTransform.anchoredPosition.x, loc.ui.rectTransform.anchoredPosition.y - currentLocation.ui.rectTransform.anchoredPosition.y);
+			int time = (int)(dis.magnitude / 100f);
+			locInfoPanel.show ("it will take " + time + " seconds");
+			targetLocation = loc;
+		}
+	}
+
+	public void UIOpen(){
+		this.gameObject.SetActive (true);
+	}
+
+	public void UIClose(){
+		this.gameObject.SetActive (false);
 	}
 
 	int getTravelTime(){

@@ -5,6 +5,13 @@ using UnityEngine.UI;
 
 public class gameLogic : MonoBehaviour {
 
+	private static gameLogic _gameLogic;
+	public static gameLogic Instance {
+		get{  
+			return _gameLogic;
+		}
+	}
+
 	public Text foodText;
 	public Text waterText;
 	public Text powerText;
@@ -46,9 +53,14 @@ public class gameLogic : MonoBehaviour {
 		get{ return power; }
 	}
 
+	void Awake() {
+		_gameLogic = this;
+	}
+
 	// Use this for initialization
 	void Start () {
 		PowerHealthMax = PowerHealth;
+		Debug.Log (-11%5);
 	}
 	
 	// Update is called once per frame
@@ -71,4 +83,14 @@ public class gameLogic : MonoBehaviour {
 			}
 		}
 	}
+
+	public void OnEnterHome(){
+	}
+
+	public void ShowMap(){
+		if (ShowMapDel != null) {
+			ShowMapDel();
+		}
+	}
+	public System.Action ShowMapDel;
 }

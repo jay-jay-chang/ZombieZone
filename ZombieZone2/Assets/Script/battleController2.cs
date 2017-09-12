@@ -9,15 +9,14 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 
 	public CameraAnchor cameraAnchor;
 	public CanvasScaler refScaler;
-	public GameObject basespace;
+	public Transform EnemyAnchor;
 
 	public zmmModel player;
 
 	public Transform sectionAnchor;
 	public List<GameObject> sections = new List<GameObject>();
 	public GameObject[] sectionData;
-
-	public bool autoPlay = true;
+	public bool SectionLoop = true;
 
 	public void OnPointerDown(PointerEventData ped) 
 	{
@@ -33,8 +32,9 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 	}
 
 	void OnSectionLoad(int sectionId){
+		int id = (sectionId+sectionData.Length)%sectionData.Length;
 		if(sections.Count <= sectionId){
-			GameObject newSection = (GameObject)Instantiate (sectionData[sectionId]);
+			GameObject newSection = (GameObject)Instantiate (sectionData[id]);
 			newSection.transform.parent = sectionAnchor;
 			newSection.transform.localPosition = new Vector3(refScaler.referenceResolution.x*sectionId, 0, 0);
 			newSection.transform.localScale = Vector3.one;
@@ -42,11 +42,11 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 			Debug.Log("section " + sectionId +" loaded(+)");
 		}
 		else if(sections[sectionId] == null){
-			GameObject newSection = (GameObject)Instantiate (sectionData[sectionId]);
+			GameObject newSection = (GameObject)Instantiate (sectionData[id]);
 			newSection.transform.parent = sectionAnchor;
 			newSection.transform.localPosition = new Vector3(refScaler.referenceResolution.x*sectionId, 0, 0);
 			newSection.transform.localScale = Vector3.one;
-			sections[sectionId] = newSection;
+			sections[id] = newSection;
 			Debug.Log("section " + sectionId +" loaded(_)");
 		}
 		//bg [sectionId].onSectionLoad(sections[bg[sectionId].id-sectionLeftLimit]);
@@ -54,12 +54,12 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 
 	void prepareSections(){
 		int loc = Mathf.FloorToInt((player.transform.localPosition.x + 0.5f*refScaler.referenceResolution.x)/refScaler.referenceResolution.x);
-		if(loc-1 >= 0){
-			OnSectionLoad(loc-1);
+		if (loc - 1 >= 0) {
+			OnSectionLoad (loc - 1);
 		}
 		OnSectionLoad(loc);
-		if(loc+1 < sectionData.Length){
-			OnSectionLoad(loc+1);
+		if (loc + 1 < sectionData.Length || SectionLoop) {
+			OnSectionLoad (loc + 1);
 		}
 	}
 
@@ -67,9 +67,13 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 	void Start () {
 		cameraAnchor.x_axis_limit = new Vector2((sectionData.Length-1)*refScaler.referenceResolution.x, 0);
 		prepareSections();
-		foreach(ZombieView view in basespace.GetComponentsInChildren<ZombieView>()){
+		foreach(ZombieView view in sectionAnchor.gameObject.GetComponentsInChildren<ZombieView>()){
 			view.OnZombieSelect += OnZombieSelect;
 		}
+		//player.transform.SetSiblingIndex (40);
+		//gameObject.transform.GetChild (0).transform.SetSiblingIndex(100);
+		//EnemyAnchor.SetSiblingIndex (50);
+		//sectionAnchor.transform.SetSiblingIndex (60);
 	}
 	
 	// Update is called once per frame
