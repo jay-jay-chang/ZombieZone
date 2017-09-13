@@ -63,17 +63,39 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 		}
 	}
 
+	void Reset(float mapLength){
+		foreach (GameObject go in sections) {
+			GameObject.Destroy(go);
+		}
+		sections.Clear ();
+		player.Reset ();
+		prepareSections();
+		cameraAnchor.x_axis_limit = new Vector2(mapLength, 0);
+	}
+
 	// Use this for initialization
 	void Start () {
 		cameraAnchor.x_axis_limit = new Vector2((sectionData.Length-1)*refScaler.referenceResolution.x, 0);
 		prepareSections();
-		foreach(ZombieView view in sectionAnchor.gameObject.GetComponentsInChildren<ZombieView>()){
+		foreach(ZombieView view in EnemyAnchor.gameObject.GetComponentsInChildren<ZombieView>()){
 			view.OnZombieSelect += OnZombieSelect;
 		}
-		//player.transform.SetSiblingIndex (40);
-		//gameObject.transform.GetChild (0).transform.SetSiblingIndex(100);
-		//EnemyAnchor.SetSiblingIndex (50);
-		//sectionAnchor.transform.SetSiblingIndex (60);
+		gameLogic.Instance.MapTravelStartDel += OnMapTravelStart;
+		gameLogic.Instance.MapTravelEndDel += OnMapTravelEnd;
+	}
+
+	void OnMapTravelStart(int interval){
+		float mapLength = player.moveStep * 30 * interval *100;
+		Debug.Log ("map length " + mapLength);
+		Reset (mapLength);
+		player.auto = true;
+		player.endPoint = mapLength;
+	}
+
+	void OnMapTravelEnd(){
+		player.auto = false;
+		player.endPoint = 0;
+		player.TryMove (0);
 	}
 	
 	// Update is called once per frame

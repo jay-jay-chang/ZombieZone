@@ -28,9 +28,19 @@ namespace Spine.Unity.Examples {
 		public bool auto = true;
 		public float endPoint = 0;
 
+		public Vector3 InitialLocalPos;
+
 		public void MoveForward(float dis){
 			move = dis;
 			state = zmmBodyState.Running;
+		}
+
+		public void Reset(){
+			this.gameObject.transform.localPosition = InitialLocalPos;
+		}
+
+		void Start(){
+			InitialLocalPos = this.gameObject.transform.localPosition;
 		}
 
 		void Update(){

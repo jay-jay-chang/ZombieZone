@@ -93,4 +93,20 @@ public class gameLogic : MonoBehaviour {
 		}
 	}
 	public System.Action ShowMapDel;
+
+	public void MapTravelStart(int interval){
+		if (MapTravelStartDel != null) {
+			MapTravelStartDel (interval);
+		}
+	}
+
+	public System.Action<int> MapTravelStartDel;
+
+	public void MapTravelEnd(){
+		if (MapTravelEndDel != null) {
+			MapTravelEndDel ();
+		}
+	}
+
+	public System.Action MapTravelEndDel;
 }

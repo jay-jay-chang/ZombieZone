@@ -123,7 +123,7 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 		} else {
 			Debug.Log (loc.id + " is selected");
 			Vector2 dis = new Vector2 (loc.ui.rectTransform.anchoredPosition.x - currentLocation.ui.rectTransform.anchoredPosition.x, loc.ui.rectTransform.anchoredPosition.y - currentLocation.ui.rectTransform.anchoredPosition.y);
-			int time = (int)(dis.magnitude / 100f);
+			int time = (int)(dis.magnitude / 10f);
 			locInfoPanel.show ("it will take " + time + " seconds");
 			targetLocation = loc;
 		}
@@ -139,7 +139,7 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
 	int getTravelTime(){
 		Vector2 dis = new Vector2 (targetLocation.ui.rectTransform.anchoredPosition.x - currentLocation.ui.rectTransform.anchoredPosition.x, targetLocation.ui.rectTransform.anchoredPosition.y - currentLocation.ui.rectTransform.anchoredPosition.y);
-		return (int)(dis.magnitude / 100f);
+		return (int)(dis.magnitude / 10f);
 	}
 
 	void OnLocGo(){
@@ -154,19 +154,24 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 		RectTransform s = currentLocation.gameObject.GetComponent<Image> ().rectTransform;
 		RectTransform e = targetLocation.gameObject.GetComponent<Image> ().rectTransform;
 
+		int travelTime = getTravelTime ();
+
 		iTween.ValueTo (curLoctionIcon.gameObject, iTween.Hash (
 			"from", s.anchoredPosition,
 			"to", e.anchoredPosition,
-			"time", (float)getTravelTime(),
+			"time", (float)travelTime,
 			"onupdatetarget", curLoctionIcon.gameObject,
 			"onupdate", "itweenMoveElememt",
 			"oncomplete", "OnComplete"));
+
+		gameLogic.Instance.MapTravelStart(travelTime);
 	}
 
 	void OnLocGoComplete(){
 		isMovingToLocation = false;
 		setCurrentLocation (targetLocation);
 		line.gameObject.SetActive (false);
+		gameLogic.Instance.MapTravelEnd ();
 	}
 
 	void OnBackHome(){
