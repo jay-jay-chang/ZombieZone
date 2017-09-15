@@ -18,6 +18,11 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 	public GameObject[] sectionData;
 	public bool SectionLoop = true;
 
+	public GameObject ZombiePref;
+
+	int travelInterval;
+	float travelTime;
+
 	public void OnPointerDown(PointerEventData ped) 
 	{
 		Vector2 pos = UIUtility.mouseToScreenPos (refScaler.referenceResolution.x, refScaler.referenceResolution.y, ped.position);
@@ -31,6 +36,29 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 		player.TryShoot (ai);
 	}
 
+	void generateEnemy(int sectionId){
+		if (sectionId < 2 ) {
+			return;
+		}
+
+		if(((float)travelInterval - travelTime) < 15){
+			Debug.Log ("generateEnemy skip");
+			return;
+		}
+		//generate random zombie
+		int num = Random.Range(0, 6);
+		for (int i = 0; i < num; ++i) {
+			GameObject enemy = (GameObject)GameObject.Instantiate (ZombiePref);
+			enemy.transform.parent = EnemyAnchor.transform;
+			enemy.transform.localPosition = new Vector3( refScaler.referenceResolution.x * Random.Range (-0.5f + sectionId, 0.5f + sectionId) , 0, 0);
+			enemy.transform.localScale = Vector3.one;
+			enemy.GetComponentInChildren<ZombieView> ().OnZombieSelect += OnZombieSelect;
+			ZombieAI ai = enemy.GetComponent<ZombieAI> ();
+			ai.target = player.gameObject;
+			//ai.axisBase = EnemyAnchor.gameObject;
+		}
+	}
+
 	void OnSectionLoad(int sectionId){
 		int id = (sectionId+sectionData.Length)%sectionData.Length;
 		if(sections.Count <= sectionId){
@@ -40,6 +68,7 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 			newSection.transform.localScale = Vector3.one;
 			sections.Add(newSection);
 			Debug.Log("section " + sectionId +" loaded(+)");
+			generateEnemy (sectionId);
 		}
 		else if(sections[sectionId] == null){
 			GameObject newSection = (GameObject)Instantiate (sectionData[id]);
@@ -49,7 +78,6 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 			sections[id] = newSection;
 			Debug.Log("section " + sectionId +" loaded(_)");
 		}
-		//bg [sectionId].onSectionLoad(sections[bg[sectionId].id-sectionLeftLimit]);
 	}
 
 	void prepareSections(){
@@ -90,6 +118,8 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 		Reset (mapLength);
 		player.auto = true;
 		player.endPoint = mapLength;
+		travelInterval = interval;
+		travelTime = 0;
 	}
 
 	void OnMapTravelEnd(){
@@ -100,6 +130,7 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 	
 	// Update is called once per frame
 	void Update () {
+		travelTime += Time.deltaTime;
 		prepareSections();
 	}
 }

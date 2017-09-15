@@ -19,6 +19,7 @@ public class ZombieAI : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		axisBase = transform.parent.gameObject;
 	}
 
 	void chase(float transition){
