@@ -109,4 +109,20 @@ public class gameLogic : MonoBehaviour {
 	}
 
 	public System.Action MapTravelEndDel;
+
+	public void EnterLocationStart(){
+		if (EnterLocationStartDel != null) {
+			EnterLocationStartDel ();
+		}
+	}
+
+	public System.Action EnterLocationStartDel;
+
+	public void EnterLocationEnd(){
+		if (EnterLocationEndDel != null) {
+			EnterLocationEndDel ();
+		}
+	}
+
+	public System.Action EnterLocationEndDel;
 }

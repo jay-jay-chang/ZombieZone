@@ -15,7 +15,8 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 
 	public Transform sectionAnchor;
 	public List<GameObject> sections = new List<GameObject>();
-	public GameObject[] sectionData;
+	public int currentSceneID;
+	public List<string> sectionData;
 	public bool SectionLoop = true;
 
 	public GameObject ZombiePref;
@@ -60,9 +61,9 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 	}
 
 	void OnSectionLoad(int sectionId){
-		int id = (sectionId+sectionData.Length)%sectionData.Length;
+		int id = (sectionId+sectionData.Count)%sectionData.Count;
 		if(sections.Count <= sectionId){
-			GameObject newSection = (GameObject)Instantiate (sectionData[id]);
+			GameObject newSection = (GameObject)Instantiate (Resources.Load(sectionData[id]));
 			newSection.transform.parent = sectionAnchor;
 			newSection.transform.localPosition = new Vector3(refScaler.referenceResolution.x*sectionId, 0, 0);
 			newSection.transform.localScale = Vector3.one;
@@ -71,7 +72,7 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 			generateEnemy (sectionId);
 		}
 		else if(sections[sectionId] == null){
-			GameObject newSection = (GameObject)Instantiate (sectionData[id]);
+			GameObject newSection = (GameObject)Instantiate (Resources.Load(sectionData[id]));
 			newSection.transform.parent = sectionAnchor;
 			newSection.transform.localPosition = new Vector3(refScaler.referenceResolution.x*sectionId, 0, 0);
 			newSection.transform.localScale = Vector3.one;
@@ -86,7 +87,7 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 			OnSectionLoad (loc - 1);
 		}
 		OnSectionLoad(loc);
-		if (loc + 1 < sectionData.Length || SectionLoop) {
+		if (loc + 1 < sectionData.Count || SectionLoop) {
 			OnSectionLoad (loc + 1);
 		}
 	}
@@ -103,16 +104,24 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 
 	// Use this for initialization
 	void Start () {
-		cameraAnchor.x_axis_limit = new Vector2((sectionData.Length-1)*refScaler.referenceResolution.x, 0);
+		sectionData = new List<string> ();
+		sectionData.Add ("back2");
+
+		cameraAnchor.x_axis_limit = new Vector2((sectionData.Count-1)*refScaler.referenceResolution.x, 0);
 		prepareSections();
 		foreach(ZombieView view in EnemyAnchor.gameObject.GetComponentsInChildren<ZombieView>()){
 			view.OnZombieSelect += OnZombieSelect;
 		}
 		gameLogic.Instance.MapTravelStartDel += OnMapTravelStart;
 		gameLogic.Instance.MapTravelEndDel += OnMapTravelEnd;
+		gameLogic.Instance.EnterLocationStartDel += OnEnterLocationStart;
+		gameLogic.Instance.EnterLocationEndDel += OnEnterLocationEnd;
 	}
 
 	void OnMapTravelStart(int interval){
+		sectionData = new List<string> ();
+		sectionData.Add ("back2");
+
 		float mapLength = player.moveStep * 30 * interval *100;
 		Debug.Log ("map length " + mapLength);
 		Reset (mapLength);
@@ -126,6 +135,25 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 		player.auto = false;
 		player.endPoint = 0;
 		player.TryMove (0);
+	}
+
+	void OnEnterLocationStart(){
+		sectionData = new List<string> ();
+		sectionData.Add ("back2");
+		sectionData.Add ("room2");
+
+		int interval = 20;
+		float mapLength = 270 + 640*2;
+		Debug.Log ("map length " + mapLength);
+		Reset (mapLength);
+		player.auto = true;
+		player.endPoint = mapLength;
+		travelInterval = interval;
+		travelTime = 0;
+		cameraAnchor.x_axis_limit = new Vector2(2*refScaler.referenceResolution.x, 0);
+	}
+
+	void OnEnterLocationEnd(){
 	}
 	
 	// Update is called once per frame

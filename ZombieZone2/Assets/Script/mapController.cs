@@ -22,6 +22,7 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
 	//ui
 	public locationInfoPanel locInfoPanel;
+	public EnterLocationPanel enterLocPanel;
 
 	bool isMovingToLocation = false;
 
@@ -72,6 +73,8 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 		initialLocations ();
 		locInfoPanel.OnlocGo += OnLocGo;
 		locInfoPanel.hide ();
+		enterLocPanel.OnEnterLocDel += OnEnterLoc;
+		enterLocPanel.hide ();
 		line.gameObject.SetActive (false);
 		curLoctionIcon.gameObject.GetComponent<itweenMisc> ().onComplete += OnLocGoComplete;
 
@@ -117,8 +120,11 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 		}
 		if (loc.id == currentLocation.id) {
 			if (loc.id == "m0001") {
-				gameLogic.Instance.OnEnterHome();
+				gameLogic.Instance.OnEnterHome ();
 				UIClose ();
+			} else {
+				locInfoPanel.hide ();
+				enterLocPanel.show ("Enter this Location?");
 			}
 		} else {
 			Debug.Log (loc.id + " is selected");
@@ -172,6 +178,13 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 		setCurrentLocation (targetLocation);
 		line.gameObject.SetActive (false);
 		gameLogic.Instance.MapTravelEnd ();
+	}
+
+	void OnEnterLoc(){
+		
+	}
+
+	void OnEnterLocComplete(){
 	}
 
 	void OnBackHome(){
