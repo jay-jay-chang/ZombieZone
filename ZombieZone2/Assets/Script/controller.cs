@@ -9,6 +9,15 @@ public class controller : MonoBehaviour, IPointerDownHandler{
 	public GameObject controlTarget;
 	public float speed = 1.0f;
 	public bool y_axis_lock = false;
+	public GameObject GainResFXRef;
+	public Transform FoodPosition;
+	public Transform WaterPosition;
+
+	public Text WaterText;
+	public Text FoodText;
+
+	public Slider PowerHP;
+	public Image PowerHpBar;
 	Vector2 target;
 
 	static Vector2 getNormPos(Vector2 pos)
@@ -40,6 +49,11 @@ public class controller : MonoBehaviour, IPointerDownHandler{
 		{
 			target = new Vector2 (controlTarget.transform.localPosition.x, controlTarget.transform.localPosition.y);
 		}
+		gameLogic.Instance.GainFoodDel += OnGainFood;
+		gameLogic.Instance.GainWaterDel += OnGainWater;
+		gameLogic.Instance.WaterProducedDel += OnProduceWater;
+		gameLogic.Instance.FoodProducedDel += OnProduceFood;
+		gameLogic.Instance.PowerHPChangeDel += OnPowerHpChange;
 	}
 	
 	// Update is called once per frame
@@ -60,5 +74,41 @@ public class controller : MonoBehaviour, IPointerDownHandler{
 		//Debug.Log (factor * fx + "," + factor * fy);
 		Vector3 newpos = new Vector3(controlTarget.transform.localPosition.x + factor * fx, controlTarget.transform.localPosition.y + factor * fy, controlTarget.transform.localPosition.z);
 		controlTarget.transform.localPosition = newpos;
+	}
+
+	void OnGainFood(int amount){
+		ShowGainResFX (FoodPosition.localPosition, "Food + " + amount);
+	}
+
+	void OnGainWater(int amount){
+		ShowGainResFX (WaterPosition.localPosition, "Water + " + amount);
+	}
+
+	void OnProduceWater(int amount){
+		WaterText.text = "Water(" + amount.ToString() + ")";
+	}
+
+	void OnProduceFood(int amount){
+		FoodText.text = "Food(" + amount.ToString() + ")";
+	}
+
+	void ShowGainResFX(Vector3 pos, string context){
+		GameObject fx = (GameObject)GameObject.Instantiate(GainResFXRef);
+		fx.transform.SetParent(this.transform);
+		fx.transform.localScale = Vector3.one;
+		fx.transform.localPosition = pos;
+		fx.GetComponentInChildren<GainResFX> ().Show (context);
+	}
+
+	void OnPowerHpChange(int amount){
+		float v = (float)amount / (float)gameLogic.Instance.PowerHealthMax;
+		if (v > 0.8f) {
+			PowerHpBar.color = Color.green;
+		} else if (v > 0.4f) {
+			PowerHpBar.color = Color.yellow;
+		} else {
+			PowerHpBar.color = Color.red;
+		}
+		PowerHP.value = v;
 	}
 }

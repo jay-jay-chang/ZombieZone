@@ -141,6 +141,8 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 		sectionData = new List<string> ();
 		sectionData.Add ("back2");
 		sectionData.Add ("room2");
+		sectionData.Add ("room2");
+		sectionData.Add ("room2");
 
 		int interval = 20;
 		float mapLength = 270 + 640*2;

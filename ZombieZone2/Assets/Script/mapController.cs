@@ -81,7 +81,6 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 		float tileWid = 0.5f * mapElemets [0].rect.width;
 		float tileHeight = 0.5f * mapElemets [0].rect.height;
 		int mapLength = 20;
-		Debug.LogError(tileWid.ToString() + ", " +tileHeight.ToString());
 		Vector2 initial = new Vector2 (-tileWid*mapLength, 0);
 		Vector3 localScale = new Vector3 (100, 100, 1);
 		mapAnchor.localPosition = new Vector3 (0, 0, mapAnchor.localPosition.z);
@@ -98,7 +97,7 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 			initial.y += tileHeight;
 		}
 
-		gameLogic.Instance.ShowMapDel += UIOpen;
+		gameLogic.Instance.ShowMapDel += SwitchMap;
 	}
 
 	void initialLocations(){
@@ -141,6 +140,14 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
 	public void UIClose(){
 		this.gameObject.SetActive (false);
+	}
+
+	public void SwitchMap(){
+		if (this.gameObject.activeSelf) {
+			UIClose ();
+		} else {
+			UIOpen ();
+		}
 	}
 
 	int getTravelTime(){
