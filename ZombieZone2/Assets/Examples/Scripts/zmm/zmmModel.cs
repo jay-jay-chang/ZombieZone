@@ -30,6 +30,8 @@ namespace Spine.Unity.Examples {
 
 		public Vector3 InitialLocalPos;
 
+		public System.Action OnArrivalDel;
+
 		public void MoveForward(float dis){
 			move = dis;
 			state = zmmBodyState.Running;
@@ -70,6 +72,9 @@ namespace Spine.Unity.Examples {
 						move = 0;
 						TryMove (0);
 					//}
+					if (OnArrivalDel != null) {
+						OnArrivalDel();
+					}
 				}
 			}
 		}

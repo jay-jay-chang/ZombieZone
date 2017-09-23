@@ -19,10 +19,14 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 	public List<string> sectionData;
 	public bool SectionLoop = true;
 
+	public SpriteRenderer Block;
+
 	public GameObject ZombiePref;
 
 	int travelInterval;
 	float travelTime;
+
+	float blockAnimTime = 1.0f;
 
 	public void OnPointerDown(PointerEventData ped) 
 	{
@@ -119,6 +123,13 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 	}
 
 	void OnMapTravelStart(int interval){
+		StartCoroutine (_OnMapTravelStart(interval));
+	}
+
+	IEnumerator _OnMapTravelStart(int interval){
+		BlockAnim (true);
+		yield return new WaitForSeconds (blockAnimTime);
+
 		sectionData = new List<string> ();
 		sectionData.Add ("back2");
 
@@ -129,6 +140,8 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 		player.endPoint = mapLength;
 		travelInterval = interval;
 		travelTime = 0;
+
+		BlockAnim (false);
 	}
 
 	void OnMapTravelEnd(){
@@ -138,6 +151,13 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 	}
 
 	void OnEnterLocationStart(){
+		StartCoroutine (_OnEnterLocationStart());
+	}
+
+	IEnumerator _OnEnterLocationStart(){
+		BlockAnim (true);
+		yield return new WaitForSeconds (blockAnimTime);
+
 		sectionData = new List<string> ();
 		sectionData.Add ("back2");
 		sectionData.Add ("room2");
@@ -153,14 +173,69 @@ public class battleController2 : MonoBehaviour , IPointerDownHandler{
 		travelInterval = interval;
 		travelTime = 0;
 		cameraAnchor.x_axis_limit = new Vector2(2*refScaler.referenceResolution.x, 0);
+
+		player.OnArrivalDel += OnEnterLocationEnd;
+
+		BlockAnim (false);
 	}
 
 	void OnEnterLocationEnd(){
+		player.OnArrivalDel -= OnEnterLocationEnd;
+		StartCoroutine (_OnEnterLocationEnd());
+	}
+
+	IEnumerator _OnEnterLocationEnd(){
+		BlockAnim (true);
+		yield return new WaitForSeconds (blockAnimTime);
+
+		sectionData = new List<string> ();
+		sectionData.Add ("back2");
+		Reset (0);
+		player.endPoint = 0;
+
+		BlockAnim (false);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		travelTime += Time.deltaTime;
 		prepareSections();
+	}
+
+	void BlockAnim(bool show){
+		Block.enabled = true;
+		if (show) {
+			Hashtable args = new Hashtable ();
+			args.Add ("from", Block.color);
+			args.Add ("to", new Color(0,0,0,1));
+			args.Add ("time", blockAnimTime);
+			args.Add ("easeType", iTween.EaseType.easeInCubic);
+			args.Add ("oncompletetarget", this.gameObject);
+			args.Add ("oncomplete", "OnBlockAnimComplete");
+			args.Add ("oncompleteparams", true);
+			args.Add ("onupdate", "OnBlockColorUpdate");
+			iTween.ValueTo (this.gameObject, args);
+		} else {
+			Hashtable args = new Hashtable ();
+			args.Add ("from", Block.color);
+			args.Add ("to", new Color(0,0,0,0));
+			args.Add ("time", blockAnimTime);
+			args.Add ("easeType", iTween.EaseType.linear);
+			args.Add ("oncompletetarget", this.gameObject);
+			args.Add ("oncomplete", "OnBlockAnimComplete");
+			args.Add ("oncompleteparams", false);
+			args.Add ("onupdate", "OnBlockColorUpdate");
+			iTween.ValueTo (this.gameObject, args);
+		}
+	}
+
+	void OnBlockColorUpdate(Color color){
+		Block.color = color;
+	}
+
+	void OnBlockAnimComplete(bool show){
+		if (!show) {
+			Block.enabled = false;
+		}
 	}
 }

@@ -7,7 +7,9 @@ using UnityEngine.EventSystems;
 public class location : MonoBehaviour, IPointerDownHandler {
 	public string 	id;
 	public Image  	ui;
+	public int 		WaterCost;
 	public System.Action<location> OnlocSelect;
+
 
 	public void OnPointerDown(PointerEventData ped) {
 		if (OnlocSelect != null) {

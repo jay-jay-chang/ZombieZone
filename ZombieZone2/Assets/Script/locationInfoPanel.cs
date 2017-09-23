@@ -7,6 +7,8 @@ public class locationInfoPanel : MonoBehaviour {
 
 	public System.Action OnlocGo;
 	public Text desc;
+	public Text cost;
+	public Button go;
 
 	public void OnLocGO(){
 		hide();
@@ -15,9 +17,11 @@ public class locationInfoPanel : MonoBehaviour {
 		}
 	}
 
-	public void show(string desc){
-		this.desc.text = desc;
+	public void show(location loc, int travelTime){
+		this.desc.text = "it will take " + travelTime + " seconds";
+		this.cost.text = "Water : " + loc.WaterCost;
 		this.gameObject.SetActive (true);
+		go.interactable = (gameLogic.Instance.Water < loc.WaterCost) ? false : true;
 	}
 
 	public void hide(){

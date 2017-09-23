@@ -129,7 +129,7 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 			Debug.Log (loc.id + " is selected");
 			Vector2 dis = new Vector2 (loc.ui.rectTransform.anchoredPosition.x - currentLocation.ui.rectTransform.anchoredPosition.x, loc.ui.rectTransform.anchoredPosition.y - currentLocation.ui.rectTransform.anchoredPosition.y);
 			int time = (int)(dis.magnitude / 10f);
-			locInfoPanel.show ("it will take " + time + " seconds");
+			locInfoPanel.show (loc, time);
 			targetLocation = loc;
 		}
 	}
@@ -155,6 +155,10 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 		return (int)(dis.magnitude / 10f);
 	}
 
+	int geTravelCost(){
+		return targetLocation.WaterCost;
+	}
+
 	void OnLocGo(){
 		if (isMovingToLocation) {
 			return;
@@ -178,6 +182,7 @@ public class mapController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 			"oncomplete", "OnComplete"));
 
 		gameLogic.Instance.MapTravelStart(travelTime);
+		gameLogic.Instance.Water -= targetLocation.WaterCost;
 	}
 
 	void OnLocGoComplete(){
