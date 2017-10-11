@@ -125,10 +125,22 @@ namespace Spine.Unity.Examples {
 
 		void OnTriggerStay2D(Collider2D other) {
 			if (auto) {
-				ZombieAI ai = other.gameObject.GetComponent<ZombieAI> ();
-				if (ai != null) {
-					TryShoot (ai);
-				}
+                if (other.gameObject.tag == "Enemy")
+                {
+                    ZombieAI ai = other.gameObject.GetComponent<ZombieAI>();
+                    if (ai != null)
+                    {
+                        TryShoot(ai);
+                    }
+                }
+                else if (other.gameObject.tag == "Supply")
+                {
+                    supply sup = other.gameObject.GetComponent<supply>();
+                    if(sup != null)
+                    {
+                     
+                    }
+                }
 			}
 		}
 

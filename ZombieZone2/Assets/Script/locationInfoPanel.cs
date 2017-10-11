@@ -21,7 +21,7 @@ public class locationInfoPanel : MonoBehaviour {
 		this.desc.text = "it will take " + travelTime + " seconds";
 		this.cost.text = "Water : " + loc.WaterCost;
 		this.gameObject.SetActive (true);
-		go.interactable = (gameLogic.Instance.Water < loc.WaterCost) ? false : true;
+		go.interactable = (gameLogic.Instance.Water.Amount < loc.WaterCost) ? false : true;
 	}
 
 	public void hide(){
