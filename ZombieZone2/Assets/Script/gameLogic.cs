@@ -17,27 +17,11 @@ public class gameLogic : MonoBehaviour
 
     public food Food;
     public water Water;
-    //public Text foodText;
-    //public Text waterText;
-    public Text powerText;
+	public power Power;
     public Text scrapText;
 
     public sceneController sc;
 
-    //public float FoodProduceStep = 0.1f;
-    //public int FoodProduce = 1;
-    //public int FoodProduced = 0;
-    //private float foodProduceProcess;
-
-    public float WaterProduceStep = 0.1f;
-    public int WaterProduce = 1;
-    public int WaterProduced = 0;
-    private float waterProduceProcess;
-
-    public float PowerProduceInterval = 1.0f;
-    public int PowerProduce = 15;
-    public float PowerDecayRate = 0.01f;
-    private float powerProduceTime = 0f;
     public int PowerHealthMax;
     private int powerHealth = 100;
     public int PowerHealth
@@ -46,32 +30,10 @@ public class gameLogic : MonoBehaviour
         get { return powerHealth; }
     }
 
-    public float PowerComsumeInterval = 1.0f;
-    public int PowerComsume = 10;
-    private float powerComsumeTime = 0f;
-
     public int RepairCost = 5;
     public int RepairHealth = 10;
 
-    private int food;
-    private int water;
-    private int power;
     private int scrap;
-
-
-    //public int Food
-    //{
-    //    set { food = value >= 0 ? value : 0; foodText.text = food.ToString(); }
-    //    get { return food; }
-    //}
-
-    
-
-    public int Power
-    {
-        set { power = value >= 0 ? value : 0; powerText.text = power.ToString(); }
-        get { return power; }
-    }
 
     public int Scrap
     {
@@ -89,35 +51,56 @@ public class gameLogic : MonoBehaviour
     {
         PowerHealthMax = PowerHealth;
         Scrap = 100;
+		PowerProducedDel += _OnPowerProduced;
+		PowerConsumeDel += _OnPowerConsume;
     }
+
+	void _OnPowerProduced(int amount)
+	{
+		PowerHealth -= Mathf.CeilToInt(Power.PowerDecayRate * PowerHealthMax);
+	}
+
+	void _OnPowerConsume(bool enough)
+	{
+		if (enough) 
+		{
+			sc.IsLight = true;
+			Food.Produce();
+			Water.Produce();
+		}
+		else 
+		{
+			sc.IsLight = false;
+		}
+	}
 
     // Update is called once per frame
     void Update()
     {
-        powerProduceTime += Time.deltaTime;
-        if (powerProduceTime >= PowerProduceInterval)
-        {
-            powerProduceTime -= PowerProduceInterval;
-            Power += Mathf.CeilToInt(((float)PowerHealth) / PowerHealthMax * PowerProduce);
-            PowerHealth -= Mathf.CeilToInt(PowerDecayRate * PowerHealthMax);
-        }
-
-        powerComsumeTime += Time.deltaTime;
-        if (powerComsumeTime >= PowerComsumeInterval)
-        {
-            powerComsumeTime -= PowerComsumeInterval;
-            if (Power >= PowerComsume)
-            {
-                Power -= PowerComsume;
-                sc.IsLight = true;
-                Food.Produce();
-                Water.Produce();
-            }
-            else
-            {
-                sc.IsLight = false;
-            }
-        }
+//        powerProduceTime += Time.deltaTime;
+//        if (powerProduceTime >= PowerProduceInterval)
+//        {
+//            powerProduceTime -= PowerProduceInterval;
+//            Power += Mathf.CeilToInt(((float)PowerHealth) / PowerHealthMax * PowerProduce);
+//            PowerHealth -= Mathf.CeilToInt(PowerDecayRate * PowerHealthMax);
+//        }
+//
+//        powerComsumeTime += Time.deltaTime;
+//        if (powerComsumeTime >= PowerComsumeInterval)
+//        {
+//            powerComsumeTime -= PowerComsumeInterval;
+//            if (Power >= PowerComsume)
+//            {
+//                Power -= PowerComsume;
+//                sc.IsLight = true;
+//                Food.Produce();
+//                Water.Produce();
+//            }
+//            else
+//            {
+//                sc.IsLight = false;
+//            }
+//        }
     }
 
     public void OnEnterHome()
@@ -132,6 +115,24 @@ public class gameLogic : MonoBehaviour
         }
     }
     public System.Action<int> PowerHPChangeDel;
+
+	public void OnPowerConsume(bool enough)
+	{
+		if (PowerConsumeDel != null)
+		{
+			PowerConsumeDel(enough);
+		}
+	}
+	public System.Action<bool> PowerConsumeDel;
+
+	public void OnPowerProduced(int amount)
+	{
+		if (PowerProducedDel != null)
+		{
+			PowerProducedDel(amount);
+		}
+	}
+	public System.Action<int> PowerProducedDel;
 
     public void OnFoodProduced(int amount)
     {
