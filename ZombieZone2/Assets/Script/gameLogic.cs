@@ -18,7 +18,7 @@ public class gameLogic : MonoBehaviour
     public food Food;
     public water Water;
 	public power Power;
-    public Text scrapText;
+	public scrap Scrap;
 
     public sceneController sc;
 
@@ -33,14 +33,6 @@ public class gameLogic : MonoBehaviour
     public int RepairCost = 5;
     public int RepairHealth = 10;
 
-    private int scrap;
-
-    public int Scrap
-    {
-        set { scrap = value >= 0 ? value : 0; scrapText.text = scrap.ToString(); }
-        get { return scrap; }
-    }
-
     void Awake()
     {
         _gameLogic = this;
@@ -50,7 +42,7 @@ public class gameLogic : MonoBehaviour
     void Start()
     {
         PowerHealthMax = PowerHealth;
-        Scrap = 100;
+		Scrap.Amount = 100;
 		PowerProducedDel += _OnPowerProduced;
 		PowerConsumeDel += _OnPowerConsume;
     }
@@ -231,9 +223,9 @@ public class gameLogic : MonoBehaviour
 
     public void Repair()
     {
-        if (Scrap >= RepairCost && PowerHealth < PowerHealthMax)
+		if (Scrap.Amount >= RepairCost && PowerHealth < PowerHealthMax)
         {
-            Scrap -= RepairCost;
+			Scrap.Amount -= RepairCost;
             PowerHealth += RepairHealth;
 
 
