@@ -23,6 +23,7 @@ public class battleController2 : MonoBehaviour, IPointerDownHandler
     public SpriteRenderer Block;
 
     public GameObject ZombiePref;
+	public GameObject SupplyPref;
 
     int travelInterval;
     float travelTime;
@@ -71,6 +72,24 @@ public class battleController2 : MonoBehaviour, IPointerDownHandler
         }
     }
 
+	void generateSupply(int sectionId)
+	{
+		if (sectionId < 2)
+		{
+			return;
+		}
+
+		//generate random zombie
+		int num = Random.Range(0, 6);
+		for (int i = 0; i < num; ++i)
+		{
+			GameObject sup = (GameObject)GameObject.Instantiate(SupplyPref);
+			sup.transform.parent = EnemyAnchor.transform;
+			sup.transform.localPosition = new Vector3(refScaler.referenceResolution.x * Random.Range(-0.5f + sectionId, 0.5f + sectionId), 0, 0);
+			sup.transform.localScale = Vector3.one;
+		}
+	}
+
     void OnSectionLoad(int sectionId)
     {
         int id = (sectionId + sectionData.Count) % sectionData.Count;
@@ -83,6 +102,7 @@ public class battleController2 : MonoBehaviour, IPointerDownHandler
             sections.Add(newSection);
             Debug.Log("section " + sectionId + " loaded(+)");
             generateEnemy(sectionId);
+			generateSupply (sectionId);
         }
         else if (sections[sectionId] == null)
         {

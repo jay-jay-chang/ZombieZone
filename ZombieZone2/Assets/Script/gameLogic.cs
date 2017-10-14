@@ -99,6 +99,11 @@ public class gameLogic : MonoBehaviour
     {
     }
 
+	public void GatherSupply(int amount)
+	{
+		Scrap.Amount += amount;
+	}
+
     public void OnPowerHPChange(int amount)
     {
         if (PowerHPChangeDel != null)

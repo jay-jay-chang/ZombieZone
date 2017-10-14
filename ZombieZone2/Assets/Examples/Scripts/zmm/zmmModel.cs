@@ -119,6 +119,33 @@ namespace Spine.Unity.Examples {
 		}
 		#endregion
 
+		public void OnSupplyTriggerStay2D(Collider2D other)
+		{
+			supply sup = other.gameObject.transform.parent.gameObject.GetComponent<supply> ();
+			if (sup != null) {
+				sup.Gather ();
+			}
+		}
+
+		public void OnAITriggerStay2D(Collider2D other)
+		{
+			if (auto) 
+			{
+				ZombieAI ai = other.gameObject.transform.parent.gameObject.GetComponent<ZombieAI> ();
+				if (ai != null) {
+					TryShoot (ai);
+				}
+			}
+			
+		}
+
+		public void OnAITriggerExit2D(Collider2D other)
+		{
+			if (auto) {
+				state = zmmBodyState.Idle;
+			}
+		}
+
 		void OnTriggerEnter2D(Collider2D other) {
 			//Debug.Log (other.gameObject.name +" Enter!");
 		}
@@ -138,7 +165,7 @@ namespace Spine.Unity.Examples {
                     supply sup = other.gameObject.GetComponent<supply>();
                     if(sup != null)
                     {
-                     
+						sup.Gather();
                     }
                 }
 			}
